@@ -1,0 +1,31 @@
+create table lib_tab(book_name varchar2(25),status varchar2(15));
+create table library_audit(date_modified date,book_name varchar2(25),old_status varchar(15),new_status varchar2(15),action varchar2(25));
+insert into lib_tab values('MATTER','UNAVAILABLE');
+insert into lib_tab values('SILENT HILL','UNAVAILABLE');
+insert into lib_tab values('GOD OF WAR','AVAILABLE');
+insert into lib_tab values('SPIDER MAN','UNAVAILABLE');
+insert into lib_tab values('UNCHARTED','AVAILABLE');
+
+CREATE OR REPLACE TRIGGER trigger_1
+AFTER INSERT OR UPDATE OR DELETE ON lib_tab FOR EACH ROW
+ENABLE
+BEGIN
+IF UPDATING THEN
+dbms_output.put_line(:OLD.status);
+INSERT INTO library_audit VALUES(SYSDATE,:OLD.book_name,:OLD.status,:NEW.status,'UPDATE');
+ELSIF INSERTING THEN
+dbms_output.put_line(:NEW.book_name||'Inserting');
+INSERT INTO library_audit VALUES(SYSDATE,:NEW.book_name,NULL,:NEW.STATUS,'INSERT');
+ELSIF DELETING THEN
+dbms_output.put_line(:OLD.book_name||'deleting');
+INSERT INTO library_audit VALUES(SYSDATE,:OLD.book_name,:OLD.STATUS,NULL,'DELETE');
+END IF;
+END;
+/
+
+select * from library_audit;
+update lib_tab set status='Available' where book_name='SILENT HILL';
+update lib_tab set status='Available' where book_name='SPIDER MAN';
+select * from lib_tab;
+select * from library_audit;
+

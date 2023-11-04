@@ -1,0 +1,240 @@
+/*
+create table o_rollcall1(rno int, name varchar(20),status  varchar(30));
+
+Table created.
+
+create table n_rollcall1(rno int, name varchar(20),status  varchar(30));
+
+Table created.
+
+ insert into n_rollcall1 values(2,'Summit','Present');
+ insert into n_rollcall1 values(3,'Ram','Present');
+ insert into n_rollcall1 values(6,'isha','Present');
+insert into o_rollcall1 values(1,'Anisha','Present');
+
+1 row created.
+
+ insert into o_rollcall1 values(2,'Summit','Present');
+
+1 row created.
+
+insert into o_rollcall1 values(3,'Ram','Present');
+
+1 row created.
+
+ insert into o_rollcall1 values(4,'Ram','Absent');
+
+1 row created.
+
+ insert into o_rollcall1 values(4,'Ram','Absent');
+
+1 row created.
+
+ insert into o_rollcall1 values(5,'Harshal','Present');
+
+1 row created.
+
+select *from o_rollcall1;
+
+       RNO NAME 		STATUS
+---------- -------------------- ------------------------------
+	 1 Anisha		Present
+	 2 Summit		Present
+	 3 Ram			Present
+	 4 Ram			Absent
+	 4 Ram			Absent
+	 5 Harshal		Present
+
+6 rows selected.
+
+
+*/
+
+implicit cursor 
+
+begin
+    update o_rollcall1 set status='Absent' where rno=5;
+    if sql%found then
+   dbms_output.put_line('Updated'); 
+    end if;
+    if sql%notfound then
+   dbms_output.put_line('Not updated - not found');
+   end if;
+   if sql%rowcount>0 then
+   dbms_output.put_line(sql%rowcount||'rows updated');
+   else
+   dbms_output.put_line('No rows updated');
+   end if;
+   end;
+  /
+  
+  Updated
+1rows updated
+
+PL/SQL procedure successfully completed.
+
+select *from o_rollcall1;
+
+       RNO NAME 		STATUS
+---------- -------------------- ------------------------------
+	 1 Anisha		Present
+	 2 Summit		Present
+	 3 Ram			Present
+	 4 Ram			Absent
+	 4 Ram			Absent
+	 5 Harshal		Absent
+
+6 rows selected.
+
+explicit 
+declare
+cursor explicit_cur is select rno,name,status from o_rollcall1 where status='Present';
+tmp explicit_cur%rowtype;
+begin
+dbms_output.put_line('Explicit Cursor Demo');
+open explicit_cur;
+loop exit when explicit_cur%notfound;
+fetch explicit_cur into tmp;
+dbms_output.put_line('     ROLLNO:       '|| tmp.rno || '     NAME:       '||tmp.name||'    STATUS:      '||tmp.status);
+end loop;
+if explicit_cur%rowcount>0 then
+dbms_output.put_line(explicit_cur%rowcount||'rows found');
+else
+dbms_output.put_line('No rows found');
+end if;
+close explicit_cur;
+end;
+/
+
+Explicit Cursor Demo
+ROLLNO:       1     NAME:	Anisha	  STATUS:      Present
+ROLLNO:       2     NAME:	Summit	  STATUS:      Present
+ROLLNO:       3     NAME:	Ram    STATUS:	    Present
+ROLLNO:       5     NAME:	Harshal    STATUS:	Present
+ROLLNO:       5     NAME:	Harshal    STATUS:	Present
+4rows found
+
+PL/SQL procedure successfully completed.
+
+
+FOR LOOP CURSOR
+set serveroutput on;
+declare
+cursor for_cur is select rno,name,status from o_rollcall1 where status='Absent'  ;
+tmp for_cur%rowtype;
+begin
+for tmp in for_cur
+loop 
+dbms_output.put_line('  ROLLNO:  '||tmp.rno||''||'   Name:  '||tmp.name||''||'Status: '||tmp.status);
+end loop;
+end;
+ /
+ROLLNO:  4   Name:  RamStatus: Absent
+ROLLNO:  4   Name:  RamStatus: Absent
+ROLLNO:  5   Name:  HarshalStatus: Absent
+
+PL/SQL procedure successfully completed.
+
+PARAMETERIZED CURSOR
+declare
+roll number;
+cursor param_cur(roll number) is select *  from o_rollcall1  where rno=roll;
+tmp param_cur%rowtype;
+begin
+roll:=&roll;
+for tmp in param_cur(roll) loop
+dbms_output.put_line('Roll No: '||tmp.rno);
+dbms_output.put_line('Name: '||tmp.name);
+dbms_output.put_line('Status: '||tmp.status);
+end loop;
+end;
+ /
+1
+old   6: roll:=&roll;
+new   6: roll:=1;
+Roll No: 1
+Name: Anisha
+Status: Present
+
+PL/SQL procedure successfully completeed
+insert into o_rollcall1 values(1,'Anisha','Present');
+
+1 row created.
+
+insert into o_rollcall1 values(2,'Summit','Present');
+
+1 row created.
+
+insert into o_rollcall1 values(3,'Ram','Present');
+
+1 row created.
+
+insert into n_rollcall1 values(2,'Summit','Present');
+
+1 row created.
+
+insert into n_rollcall1 values(3,'Ram','Present');
+
+1 row created.
+
+insert into n_rollcall1 values(6,'isha','Present');
+
+1 row created.
+
+select * from o_rollcall1;
+
+       RNO NAME 		STATUS
+---------- -------------------- ------------------------------
+	 1 Anisha		Present
+	 2 Summit		Present
+	 3 Ram			Present
+
+select * from n_rollcall1;
+
+       RNO NAME 		STATUS
+---------- -------------------- ------------------------------
+	 2 Summit		Present
+	 3 Ram			Present
+	 6 isha 		Present
+
+
+
+
+MERGE
+begin
+merge into n_rollcall1 t1 using (select rno,name,status from o_rollcall1) t2 on (t1.rno=t2.rno) when not matched then insert values(t2.rno,t2.name,t2.status);
+if sql%rowcount>0 then
+dbms_output.put_line('Merged ' ||sql%rowcount||' Rows updated');
+else
+dbms_output.put_line('no rows updated');
+end if;
+if sql%notfound then
+dbms_output.put_line('Not Merged');
+end if;
+end;
+/
+
+
+Merged 1Rows updated
+
+PL/SQL procedure successfully completed.
+
+select * from o_rollcall1;
+
+       RNO NAME 		STATUS
+---------- -------------------- ------------------------------
+	 1 Anisha		Present
+	 2 Summit		Present
+	 3 Ram			Present
+
+select * from n_rollcall1;
+
+       RNO NAME 		STATUS
+---------- -------------------- ------------------------------
+	 2 Summit		Present
+	 3 Ram			Present
+	 6 isha 		Present
+	 1 Anisha		Present
+
+
+

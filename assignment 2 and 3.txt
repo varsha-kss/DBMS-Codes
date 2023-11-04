@@ -1,0 +1,437 @@
+mysql> insert into employees values(24,"Suresh","Noida",23);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into employees values(25,"Mukesh","Jaipur",46);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into employees values(26,"Laxman","Mumbai",48);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into employees values(28,"Laksh","Delhi",23);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from employees where name="ramesh";
++-------+--------+-------+------+
+| id_no | Name   | place | age  |
++-------+--------+-------+------+
+|    23 | Ramesh | Pune  |   35 |
++-------+--------+-------+------+
+1 row in set (0.01 sec)
+
+mysql> select place from employees where age>35;
++--------+
+| place  |
++--------+
+| Jaipur |
+| Mumbai |
++--------+
+2 rows in set (0.00 sec)
+
+mysql> select place,age from employees where age=46;
++--------+------+
+| place  | age  |
++--------+------+
+| Jaipur |   46 |
++--------+------+
+1 row in set (0.00 sec)
+
+mysql> alter table employees add salary int;
+Query OK, 0 rows affected (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> update employees set salary=25000 where age>35;
+Query OK, 2 rows affected (0.01 sec)
+Rows matched: 2  Changed: 2  Warnings: 0
+
+mysql> select * from employees;
++-------+--------+--------+------+--------+
+| id_no | Name   | place  | age  | salary |
++-------+--------+--------+------+--------+
+|    23 | Ramesh | Pune   |   35 |   NULL |
+|    24 | Suresh | Noida  |   23 |   NULL |
+|    25 | Mukesh | Jaipur |   46 |  25000 |
+|    26 | Laxman | Mumbai |   48 |  25000 |
+|    28 | Laksh  | Delhi  |   23 |   NULL |
++-------+--------+--------+------+--------+
+5 rows in set (0.00 sec)
+
+mysql> update employees set salary=10000 where salary is NULL;
+Query OK, 3 rows affected (0.01 sec)
+Rows matched: 3  Changed: 3  Warnings: 0
+
+mysql> select * from employees where name="ramesh" or name="suresh";
++-------+--------+-------+------+--------+
+| id_no | Name   | place | age  | salary |
++-------+--------+-------+------+--------+
+|    23 | Ramesh | Pune  |   35 |  10000 |
+|    24 | Suresh | Noida |   23 |  10000 |
++-------+--------+-------+------+--------+
+2 rows in set (0.00 sec)
+
+mysql> select id_no,Name from employees where salary between 20000 and 30000;
++-------+--------+
+| id_no | Name   |
++-------+--------+
+|    25 | Mukesh |
+|    26 | Laxman |
++-------+--------+
+2 rows in set (0.01 sec)
+
+mysql> delete from employees where name="suresh";
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select* from employees where salary>10000 limit 2;
++-------+--------+--------+------+--------+
+| id_no | Name   | place  | age  | salary |
++-------+--------+--------+------+--------+
+|    25 | Mukesh | Jaipur |   46 |  25000 |
+|    26 | Laxman | Mumbai |   48 |  25000 |
++-------+--------+--------+------+--------+
+2 rows in set (0.00 sec)
+
+mysql> select min(salary) from employees;
++-------------+
+| min(salary) |
++-------------+
+|       10000 |
++-------------+
+1 row in set (0.01 sec)
+
+mysql> select max(salary) from employees where name="ramesh" or name="mukesh";
++-------------+
+| max(salary) |
++-------------+
+|       25000 |
++-------------+
+1 row in set (0.01 sec)
+
+mysql> select sum(salary) from employees where place="pune" or place="mumbai";
++-------------+
+| sum(salary) |
++-------------+
+|       35000 |
++-------------+
+1 row in set (0.00 sec)
+
+mysql> select * from employees where name like "%sh";
++-------+--------+--------+------+--------+
+| id_no | Name   | place  | age  | salary |
++-------+--------+--------+------+--------+
+|    23 | Ramesh | Pune   |   35 |  10000 |
+|    25 | Mukesh | Jaipur |   46 |  25000 |
+|    28 | Laksh  | Delhi  |   23 |  10000 |
++-------+--------+--------+------+--------+
+3 rows in set (0.01 sec)
+
+mysql> select * from employees where place in("pune","mumbai");
++-------+--------+--------+------+--------+
+| id_no | Name   | place  | age  | salary |
++-------+--------+--------+------+--------+
+|    23 | Ramesh | Pune   |   35 |  10000 |
+|    26 | Laxman | Mumbai |   48 |  25000 |
++-------+--------+--------+------+--------+
+2 rows in set (0.00 sec)
+
+mysql> select * from employees order by salary;
++-------+--------+--------+------+--------+
+| id_no | Name   | place  | age  | salary |
++-------+--------+--------+------+--------+
+|    23 | Ramesh | Pune   |   35 |  10000 |
+|    28 | Laksh  | Delhi  |   23 |  10000 |
+|    25 | Mukesh | Jaipur |   46 |  25000 |
+|    26 | Laxman | Mumbai |   48 |  25000 |
++-------+--------+--------+------+--------+
+4 rows in set (0.00 sec)
+
+mysql> select count(name),place from employees group by place;
++-------------+--------+
+| count(name) | place  |
++-------------+--------+
+|           1 | Pune   |
+|           1 | Jaipur |
+|           1 | Mumbai |
+|           1 | Delhi  |
++-------------+--------+
+4 rows in set (0.01 sec)
+
+mysql> insert into employees values(14,'Varsha','Pune',20,'30000');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select count(name),place from employees group by place;
++-------------+--------+
+| count(name) | place  |
++-------------+--------+
+|           2 | Pune   |
+|           1 | Jaipur |
+|           1 | Mumbai |
+|           1 | Delhi  |
++-------------+--------+
+4 rows in set (0.00 sec)
+
+mysql> select count(name) as total_residents,place from employees group by place;
++-----------------+--------+
+| total_residents | place  |
++-----------------+--------+
+|               2 | Pune   |
+|               1 | Jaipur |
+|               1 | Mumbai |
+|               1 | Delhi  |
++-----------------+--------+
+4 rows in set (0.00 sec)
+
+mysql> select count(name) as total_residents,place from employees group by place order by count(name) desc;
++-----------------+--------+
+| total_residents | place  |
++-----------------+--------+
+|               2 | Pune   |
+|               1 | Jaipur |
+|               1 | Mumbai |
+|               1 | Delhi  |
++-----------------+--------+
+4 rows in set (0.00 sec)
+
+mysql> select count(name) as total_residents,place from employees group by place order by count(name) asc;
++-----------------+--------+
+| total_residents | place  |
++-----------------+--------+
+|               1 | Jaipur |
+|               1 | Mumbai |
+|               1 | Delhi  |
+|               2 | Pune   |
++-----------------+--------+
+4 rows in set (0.00 sec)
+
+mysql> select min(id_no),max(age),avg(salary) from employees;
++------------+----------+-------------+
+| min(id_no) | max(age) | avg(salary) |
++------------+----------+-------------+
+|         14 |       48 |  20000.0000 |
++------------+----------+-------------+
+1 row in set (0.00 sec)
+
+mysql> select * from employees;
++-------+--------+--------+------+--------+
+| id_no | Name   | place  | age  | salary |
++-------+--------+--------+------+--------+
+|    14 | Varsha | Pune   |   20 |  30000 |
+|    23 | Ramesh | Pune   |   35 |  10000 |
+|    25 | Mukesh | Jaipur |   46 |  25000 |
+|    26 | Laxman | Mumbai |   48 |  25000 |
+|    28 | Laksh  | Delhi  |   23 |  10000 |
++-------+--------+--------+------+--------+
+5 rows in set (0.00 sec)
+
+mysql> create table ph_no(ph_no1 bigint,ph_no2 bigint);
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> alter table ph_no add id_no int primary key;
+Query OK, 0 rows affected (0.05 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc ph_no;
++--------+--------+------+-----+---------+-------+
+| Field  | Type   | Null | Key | Default | Extra |
++--------+--------+------+-----+---------+-------+
+| ph_no1 | bigint | YES  |     | NULL    |       |
+| ph_no2 | bigint | YES  |     | NULL    |       |
+| id_no  | int    | NO   | PRI | NULL    |       |
++--------+--------+------+-----+---------+-------+
+3 rows in set (0.02 sec)
+
+mysql> drop table ph_no;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql>
+mysql> create table ph_no(id_no int,ph_no1 bigint,ph_no2 bigint);
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> insert into ph_no values(23,456723,9745352);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into ph_no values(25,445423,9743352);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into ph_no values(28,354633,5432352);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from ph_no;
++-------+--------+---------+
+| id_no | ph_no1 | ph_no2  |
++-------+--------+---------+
+|    23 | 456723 | 9745352 |
+|    25 | 445423 | 9743352 |
+|    28 | 354633 | 5432352 |
++-------+--------+---------+
+3 rows in set (0.00 sec)
+
+mysql> select employees.name,employees.age,employees.salary,ph_no.ph_no1,ph_no.ph_no2 from employees inner join ph_no on employees.id_no=ph_no.id_no;
++--------+------+--------+--------+---------+
+| name   | age  | salary | ph_no1 | ph_no2  |
++--------+------+--------+--------+---------+
+| Ramesh |   35 |  10000 | 456723 | 9745352 |
+| Mukesh |   46 |  25000 | 445423 | 9743352 |
+| Laksh  |   23 |  10000 | 354633 | 5432352 |
++--------+------+--------+--------+---------+
+3 rows in set (0.00 sec)
+
+mysql> select employees.name,employees.salary,ph_no.ph_no1,ph_no2 from employees left join ph_no on employees.id_no=ph_no.id_no;
++--------+--------+--------+---------+
+| name   | salary | ph_no1 | ph_no2  |
++--------+--------+--------+---------+
+| Varsha |  30000 |   NULL |    NULL |
+| Ramesh |  10000 | 456723 | 9745352 |
+| Mukesh |  25000 | 445423 | 9743352 |
+| Laxman |  25000 |   NULL |    NULL |
+| Laksh  |  10000 | 354633 | 5432352 |
++--------+--------+--------+---------+
+5 rows in set (0.00 sec)
+
+mysql> select employees.name,employees.salary,ph_no.ph_no1,ph_no2 from employees right join ph_no on employees.id_no=ph_no.id_no;
++--------+--------+--------+---------+
+| name   | salary | ph_no1 | ph_no2  |
++--------+--------+--------+---------+
+| Ramesh |  10000 | 456723 | 9745352 |
+| Mukesh |  25000 | 445423 | 9743352 |
+| Laksh  |  10000 | 354633 | 5432352 |
++--------+--------+--------+---------+
+3 rows in set (0.00 sec)
+
+mysql> SET profiling = 1;
+Query OK, 0 rows affected, 1 warning (0.01 sec)
+
+mysql> EXPLAIN SELECT * FROM employees WHERE name='Varsha';
++----+-------------+-----------+------------+------+---------------+------+---------+------+------+----------+-------------+
+| id | select_type | table     | partitions | type | possible_keys | key  | key_len | ref  | rows | filtered | Extra       |
++----+-------------+-----------+------------+------+---------------+------+---------+------+------+----------+-------------+
+|  1 | SIMPLE      | employees | NULL       | ALL  | NULL          | NULL | NULL    | NULL |    5 |    20.00 | Using where |
++----+-------------+-----------+------------+------+---------------+------+---------+------+------+----------+-------------+
+1 row in set, 1 warning (0.01 sec)
+
+mysql> SHOW PROFILE;
++--------------------------------+----------+
+| Status                         | Duration |
++--------------------------------+----------+
+| starting                       | 0.000195 |
+| Executing hook on transaction  | 0.000005 |
+| starting                       | 0.000011 |
+| checking permissions           | 0.000009 |
+| Opening tables                 | 0.000088 |
+| init                           | 0.000006 |
+| System lock                    | 0.000024 |
+| optimizing                     | 0.000018 |
+| statistics                     | 0.000043 |
+| preparing                      | 0.003709 |
+| explaining                     | 0.002770 |
+| end                            | 0.000011 |
+| query end                      | 0.000005 |
+| waiting for handler commit     | 0.000029 |
+| closing tables                 | 0.000024 |
+| freeing items                  | 0.000141 |
+| cleaning up                    | 0.000025 |
++--------------------------------+----------+
+17 rows in set, 1 warning (0.01 sec)
+
+mysql> insert into employees values(29,'Laksh','Mumbai',28,30000);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into employees values(31,'Laksh','Jaipur',40,40000);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> EXPLAIN SELECT * FROM employees where name='Laksh';
++----+-------------+-----------+------------+------+---------------+------+---------+------+------+----------+-------------+
+| id | select_type | table     | partitions | type | possible_keys | key  | key_len | ref  | rows | filtered | Extra       |
++----+-------------+-----------+------------+------+---------------+------+---------+------+------+----------+-------------+
+|  1 | SIMPLE      | employees | NULL       | ALL  | NULL          | NULL | NULL    | NULL |    7 |    14.29 | Using where |
++----+-------------+-----------+------------+------+---------------+------+---------+------+------+----------+-------------+
+1 row in set, 1 warning (0.00 sec)
+
+mysql> create index idx_name on employees(name);
+Query OK, 0 rows affected (0.05 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> EXPLAIN SELECT * FROM employees where name='Laksh';
++----+-------------+-----------+------------+------+---------------+----------+---------+-------+------+----------+-------+
+| id | select_type | table     | partitions | type | possible_keys | key      | key_len | ref   | rows | filtered | Extra |
++----+-------------+-----------+------------+------+---------------+----------+---------+-------+------+----------+-------+
+|  1 | SIMPLE      | employees | NULL       | ref  | idx_name      | idx_name | 102     | const |    3 |   100.00 | NULL  |
++----+-------------+-----------+------------+------+---------------+----------+---------+-------+------+----------+-------+
+1 row in set, 1 warning (0.00 sec)
+
+mysql> CREATE VIEW view_name AS
+    -> SELECT column1, column2, ...
+    -> FROM table_name
+    -> WHERE condition;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '...
+FROM table_name
+WHERE condition' at line 2
+mysql> CREATE VIEW mini_emp AS
+    -> SELECT name,salary
+    -> from employees
+    -> where salary=25000;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select * from mini_emp;
++--------+--------+
+| name   | salary |
++--------+--------+
+| Mukesh |  25000 |
+| Laxman |  25000 |
++--------+--------+
+2 rows in set (0.01 sec)
+
+mysql> create view joined_table select employees.name,employees.salary,ph_no.ph_no1,ph_no2 from employees right join ph_no on employees.id_no=ph_no.id_no;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'select employees.name,employees.salary,ph_no.ph_no1,ph_no2 from employees right ' at line 1
+mysql> create view joined_table as select employees.name,employees.salary,ph_no.ph_no1,ph_no2 from employees right join ph_no on employees.id_no=ph_no.id_no;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> joined_table;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'joined_table' at line 1
+mysql> select * from joined_table;
++--------+--------+--------+---------+
+| name   | salary | ph_no1 | ph_no2  |
++--------+--------+--------+---------+
+| Ramesh |  10000 | 456723 | 9745352 |
+| Mukesh |  25000 | 445423 | 9743352 |
+| Laksh  |  10000 | 354633 | 5432352 |
++--------+--------+--------+---------+
+3 rows in set (0.00 sec)
+
+mysql> select name from employees where salary>(select avg(salary) from employees);
++--------+
+| name   |
++--------+
+| Varsha |
+| Mukesh |
+| Laxman |
+| Laksh  |
+| Laksh  |
++--------+
+5 rows in set (0.01 sec)
+
+mysql> select name,salary from employees where salary>(select avg(salary) from employees);
++--------+--------+
+| name   | salary |
++--------+--------+
+| Varsha |  30000 |
+| Mukesh |  25000 |
+| Laxman |  25000 |
+| Laksh  |  30000 |
+| Laksh  |  40000 |
++--------+--------+
+5 rows in set (0.00 sec)
+
+mysql> select name,(select max(salary) from employees) as max_salary from employees;
++--------+------------+
+| name   | max_salary |
++--------+------------+
+| Laksh  |      40000 |
+| Laksh  |      40000 |
+| Laksh  |      40000 |
+| Laxman |      40000 |
+| Mukesh |      40000 |
+| Ramesh |      40000 |
+| Varsha |      40000 |
++--------+------------+
+7 rows in set (0.00 sec)
+
+mysql>

@@ -1,0 +1,55 @@
+create table borrow(roll_no NUMBER, name varchar(20),date_of_issue date,book_name varchar(20), status varchar(20));
+
+
+drop table borrow;
+
+set serveroutput on;
+ 
+
+create table fine(roll_no NUMBER,sys_date date,actfine NUMBER);
+
+
+-- Inserting records into the 'borrow' table
+insert into borrow values(1,'ram',TO_DATE('5-10-23', 'MM-DD-YY'),'dbms','i');
+insert into borrow values(2,'sham',TO_DATE('1-8-23', 'MM-DD-YY'),'cn','i');
+insert into borrow values(10,'golu',TO_DATE('8-10-23', 'MM-DD-YY'),'dm','i');
+
+select * from borrow;
+select * from fine;
+
+drop table fine
+
+
+
+
+
+
+
+DECLARE
+  roll NUMBER := &roll;
+  amount NUMBER;
+  noOfDays NUMBER;
+  CDate DATE;
+  tableDate DATE;
+BEGIN
+  SELECT SYSDATE INTO CDate FROM dual;
+  SELECT date_of_issue INTO tableDate FROM borrow WHERE roll_no = roll;
+  noOfDays := CDate - tableDate;
+
+  IF noOfDays > 15 AND noOfDays < 30 THEN
+    amount := noOfDays * 5;
+    INSERT INTO fine (roll_no, sys_date, actfine) VALUES (roll, CDate, amount);
+    UPDATE borrow SET status = 'r' WHERE roll_no = roll;
+  ELSIF noOfDays >= 30 THEN
+    amount := noOfDays * 50;
+    INSERT INTO fine (roll_no, sys_date, actfine) VALUES (roll, CDate, amount);
+    UPDATE borrow SET status = 'r' WHERE roll_no = roll;
+  ELSE
+    dbms_output.put_line('No fine');
+  END IF;
+END;
+/
+
+
+
+
